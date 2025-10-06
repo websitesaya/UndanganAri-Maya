@@ -1,0 +1,131 @@
+// Countdown Timer
+function countdown() {
+  const countDate = new Date("Oct 17, 2025 18:00:00").getTime();
+  const now = new Date().getTime();
+  const gap = countDate - now;
+
+  const second = 1000;
+  const minute = second * 60;
+  const hour = minute * 60;
+  const day = hour * 24;
+
+  const textDay = Math.floor(gap / day);
+  const textHour = Math.floor((gap % day) / hour);
+  const textMinute = Math.floor((gap % hour) / minute);
+  const textSecond = Math.floor((gap % minute) / second);
+
+  const dayEl = document.querySelector(".day");
+  const hourEl = document.querySelector(".hour");
+  const minuteEl = document.querySelector(".minute");
+  const secondEl = document.querySelector(".second");
+
+  if (dayEl) dayEl.innerText = textDay;
+  if (hourEl) hourEl.innerText = textHour;
+  if (minuteEl) minuteEl.innerText = textMinute;
+  if (secondEl) secondEl.innerText = textSecond;
+}
+
+setInterval(countdown, 1000);
+
+// Play Music and Start Snow After DOM Load
+window.addEventListener("DOMContentLoaded", () => {
+  const audio = document.getElementById("bg-music");
+  const cover = document.getElementById("cover");
+  const openBtn = document.getElementById("openInvitation");
+
+  console.log("Audio:", audio); // Debug
+  console.log("Cover:", cover); // Debug
+  console.log("Button:", openBtn); // Debug
+
+  // Musik hanya dimulai setelah user klik tombol
+  if (openBtn && audio && cover) {
+    openBtn.addEventListener("click", () => {
+      console.log("Button clicked!"); // Debug
+      
+      // Mainkan musik
+      audio.play().then(() => {
+        console.log("Music playing!"); // Debug
+      }).catch(err => {
+        console.log("Audio play prevented:", err);
+      });
+      
+      // Sembunyikan cover dengan animasi
+      cover.style.transition = "opacity 0.5s";
+      cover.style.opacity = "0";
+      setTimeout(() => {
+        cover.style.display = "none";
+      }, 500);
+    });
+  } else {
+    console.error("Element not found!");
+    console.log("Missing elements:", {
+      audio: !audio,
+      cover: !cover,
+      openBtn: !openBtn
+    });
+  }
+
+  // Jalankan Efek Hujan Salju
+  createSnowflakes();
+
+  // RSVP Form Handler dengan WhatsApp
+  const rsvpForm = document.getElementById('rsvpForm');
+  if (rsvpForm) {
+    rsvpForm.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const nama = document.getElementById('namaInput').value.trim();
+      const kehadiran = document.getElementById('kehadiranSelect').value;
+      const ucapan = document.getElementById('ucapanTextarea').value.trim();
+
+      if (!nama || !kehadiran) {
+        alert('Mohon lengkapi nama dan pilihan kehadiran!');
+        return;
+      }
+
+      const nomorWhatsApp = '6282318640249';
+      let pesan = `*RSVP Undangan*\n\n`;
+      pesan += `Nama: ${nama}\n`;
+      pesan += `Kehadiran: ${kehadiran}\n`;
+
+      if (ucapan) {
+        pesan += `\nUcapan:\n${ucapan}`;
+      }
+
+      const pesanEncoded = encodeURIComponent(pesan);
+      const waLink = `https://wa.me/${nomorWhatsApp}?text=${pesanEncoded}`;
+      window.open(waLink, '_blank');
+    });
+  }
+});
+
+// Hujan Salju
+function createSnowflakes() {
+  const snowContainer = document.querySelector('.snow');
+  if (!snowContainer) return;
+  
+  const numberOfSnowflakes = 100;
+  for (let i = 0; i < numberOfSnowflakes; i++) {
+    const snowflake = document.createElement('div');
+    snowflake.className = 'snowflake';
+    snowflake.style.width = `${Math.random() * 10 + 5}px`;
+    snowflake.style.height = snowflake.style.width;
+    snowflake.style.left = `${Math.random() * 100}vw`;
+    snowflake.style.animationDuration = `${Math.random() * 3 + 2}s`;
+    snowflake.style.animationDelay = `${Math.random() * 5}s`;
+    snowContainer.appendChild(snowflake);
+  }
+}
+
+// Smooth Scroll
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener("click", function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute("href"));
+    if (target) {
+      target.scrollIntoView({
+        behavior: "smooth"
+      });
+    }
+  });
+});
