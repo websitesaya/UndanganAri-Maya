@@ -41,14 +41,14 @@ window.addEventListener("DOMContentLoaded", () => {
   if (openBtn && audio && cover) {
     openBtn.addEventListener("click", () => {
       console.log("Button clicked!"); // Debug
-      
+
       // Mainkan musik
       audio.play().then(() => {
         console.log("Music playing!"); // Debug
       }).catch(err => {
         console.log("Audio play prevented:", err);
       });
-      
+
       // Sembunyikan cover dengan animasi
       cover.style.transition = "opacity 0.5s";
       cover.style.opacity = "0";
@@ -62,6 +62,23 @@ window.addEventListener("DOMContentLoaded", () => {
       audio: !audio,
       cover: !cover,
       openBtn: !openBtn
+    });
+  }
+
+  // Counter foto galeri
+  const slider = document.querySelector('.gallery-slider');
+  const counter = document.getElementById('current-photo');
+  const total = document.getElementById('total-photos');
+
+  if (slider && counter && total) {
+    const images = slider.querySelectorAll('img');
+    total.textContent = images.length;
+
+    slider.addEventListener('scroll', () => {
+      const scrollLeft = slider.scrollLeft;
+      const width = slider.offsetWidth;
+      const current = Math.round(scrollLeft / width) + 1;
+      counter.textContent = current;
     });
   }
 
@@ -103,7 +120,7 @@ window.addEventListener("DOMContentLoaded", () => {
 function createSnowflakes() {
   const snowContainer = document.querySelector('.snow');
   if (!snowContainer) return;
-  
+
   const numberOfSnowflakes = 100;
   for (let i = 0; i < numberOfSnowflakes; i++) {
     const snowflake = document.createElement('div');
