@@ -1,226 +1,307 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ari & Maya - Undangan Pernikahan</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
-</head>
-
-<body>
-  <!-- Audio dengan ID -->
-  <audio id="bg-music" loop>
-    <source src="audio/music_wedding.mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- Cover Page -->
+  <title>Generator Link Undangan</title>
   <style>
-    #cover {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background: linear-gradient(rgba(103, 127, 233, 0.2), rgba(118, 75, 162, 0.2)),
-        url('images/Foto1.jpg') center/cover no-repeat;
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
       display: flex;
-      align-items: center;
       justify-content: center;
-      flex-direction: column;
-      color: rgb(247, 102, 35);
-      text-align: center;
-      z-index: 9999;
+      align-items: center;
+      padding: 20px;
     }
-
-    /* Kontainer teks agar bisa diposisikan dengan pasti */
-    .cover-text {
-      position: absolute;
-      top: 10%;
-      /* posisi dari atas layar */
-      left: 50%;
-      transform: translateX(-50%);
+    
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
       width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
       text-align: center;
-      padding: 0 20px;
     }
-
-    .cover-text h1 {
-      font-family: 'Great Vibes', cursive;
-      font-size: 3rem;
-      margin-bottom: 15px;
-      line-height: 1.4;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-    }
-
-    .cover-text h1 span {
-      display: block;
-      font-size: 3rem;
-    }
-
-    .cover-text p {
-      font-size: 1.2rem;
+    
+    .subtitle {
+      text-align: center;
+      color: #666;
       margin-bottom: 30px;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      font-size: 0.9em;
     }
-
-    #openInvitation {
-      padding: 15px 40px;
-      font-size: 1.1rem;
-      background: rgb(82, 5, 5);
-      color: #eeb8ae;
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+    
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
       border: none;
-      border-radius: 50px;
-      cursor: pointer;
+      border-radius: 10px;
+      font-size: 16px;
       font-weight: bold;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      transition: all 0.3s ease;
-      position: absolute;
-      bottom: 10%;
+      cursor: pointer;
+      transition: transform 0.2s;
     }
-
-    /* Responsif untuk layar kecil */
-    @media (max-width: 600px) {
-      .cover-text {
-        top: 7%;
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      display: none;
+    }
+    
+    .result.show {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
       }
-
-      .cover-text h1 {
-        font-size: 2.4rem;
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
-
-      .cover-text h1 span {
-        font-size: 2.4rem;
-      }
-
-      .cover-text p {
-        font-size: 1rem;
-      }
+    }
+    
+    .result h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+    }
+    
+    .link-box {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid #e0e0e0;
+      word-break: break-all;
+      margin-bottom: 15px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    
+    .btn-copy {
+      background: #28a745;
+      padding: 10px 20px;
+      width: auto;
+      margin-right: 10px;
+    }
+    
+    .btn-whatsapp {
+      background: #25D366;
+      padding: 10px 20px;
+      width: auto;
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      display: none;
+    }
+    
+    .success-message.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .example {
+      background: #fff3cd;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      border-left: 4px solid #ffc107;
+    }
+    
+    .example-title {
+      font-weight: bold;
+      color: #856404;
+      margin-bottom: 8px;
+    }
+    
+    .example-list {
+      color: #856404;
+      font-size: 0.9em;
+      line-height: 1.8;
     }
   </style>
-
-  <div id="cover">
-    <div class="cover-text">
-      <h1>Undangan Pernikahan<br><span>Ari & Maya</span></h1>
-      <p>Kepada Yth.<br>Bapak/Ibu/Saudara/i</p>
+</head>
+<body>
+  <div class="container">
+    <h1>🎊 Generator Link Undangan</h1>
+    <p class="subtitle">Ari & Maya Wedding</p>
+    
+    <div class="form-group">
+      <label for="baseUrl">Link Website Undangan:</label>
+      <input type="text" id="baseUrl" placeholder="https://undangan-arimaya.com" value="https://undangan-arimaya.com">
     </div>
-
-    <button id="openInvitation">🎵 Buka Undangan</button>
+    
+    <div class="form-group">
+      <label for="guestName">Nama Tamu:</label>
+      <input type="text" id="guestName" placeholder="Contoh: Bapak John Doe">
+    </div>
+    
+    <button onclick="generateLink()">✨ Generate Link</button>
+    
+    <div class="result" id="result">
+      <h3>Link Undangan:</h3>
+      <div class="link-box" id="generatedLink"></div>
+      <div class="buttons">
+        <button class="btn-copy" onclick="copyLink()">📋 Copy Link</button>
+        <button class="btn-whatsapp" onclick="shareWhatsApp()">💬 Kirim via WhatsApp</button>
+      </div>
+      <div class="success-message" id="successMessage">✓ Link berhasil disalin!</div>
+    </div>
+    
+    <div class="example">
+      <div class="example-title">💡 Tips Penulisan Nama:</div>
+      <div class="example-list">
+        • Bapak John Doe<br>
+        • Ibu Sarah & Keluarga<br>
+        • Saudara Michael<br>
+        • Keluarga Besar Tuan Budi<br>
+        • Bapak/Ibu Ahmad
+      </div>
+    </div>
   </div>
-
-  <!-- Hero Section -->
-  <section class="hero" id="hero">
-    <div class="overlay"></div>
-    <div class="hero-content">
-      <center>
-        <h1 class="typing">Ari & Maya</h1>
-      </center>
-      <p class="sub">Dengan suka cita mengundang Anda ke pernikahan kami ❤️🥰</p>
-      <a href="#Ucapan Anda" class="btn-cta">Konfirmasi Kehadiran</a>
-      <p class="title">Markus 10:8-9</p>
-      <p class="description">Dan mereka keduanya akan menjadi satu daging, jadi mereka tidak lagi menjadi dua orang,
-        melainkan satu. Oleh karena itu apa yang telah dipersatukan Tuhan, janganlah manusia memisahkan.</p>
-    </div>
-  </section>
-
-  <!-- Countdown -->
-  <section class="countdown" id="countdown">
-    <h2>Menuju Hari Bahagia</h2>
-    <div class="timer">
-      <div><span id="days"></span>
-        <p>Jumat</p>
-      </div>
-      <div><span id="hours"></span>
-        <p>17 Okt</p>
-      </div>
-      <div><span id="minutes"></span>
-        <p>18.00</p>
-      </div>
-      <div><span id="seconds"></span>
-        <p>2025</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Galeri -->
-  <section class="gallery" id="gallery">
-    <h2>Galeri Prewedding</h2>
-    <!-- Instruksi Geser - TAMBAHKAN INI -->
-    <div class="gallery-instruction">
-      Geser untuk melihat foto lainnya
-    </div>
-    <p class="photo-caption-title">Kejadian 2:18</p>
-    <p class="photo-caption-description">Dan Tuhan Yahweh berfirman, "Tidak baik, kalau manusia itu seorang diri saja;
-      Aku akan menjadikannya seorang penolong yang sepadan baginya."</p>
-    <div class="gallery-slider">
-      <img src="images/Foto1.jpg" alt="Foto 1">
-      <img src="images/Foto2.jpg" alt="Foto 2">
-      <img src="images/Foto3.jpg" alt="Foto 3">
-      <img src="images/Foto4.jpg" alt="Foto 4">
-      <img src="images/Foto5.jpg" alt="Foto 5">
-      <img src="images/Foto7.jpg" alt="Foto 5">
-      <img src="images/Foto8.jpg" alt="Foto 3">
-      <img src="images/Foto9.jpg" alt="Foto 4">
-      <img src="images/Foto10.jpg" alt="Foto 5">
-      <img src="images/Foto11.jpg" alt="Foto 4">
-      <img src="images/Foto12.jpg" alt="Foto 5">
-    </div>
-    <!-- Counter Foto - TAMBAHKAN INI -->
-    <div class="gallery-counter">
-      <span id="current-photo">1</span> / <span id="total-photos">3</span>
-    </div>
-  </section>
-
-  <!-- Lokasi & Rekening -->
-  <section class="info" id="info">
-    <div class="location">
-      <h2>Lokasi Acara: Rumah Bapak Anderias Elimanafe</h2>
-      <iframe
-        src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d4195.0785124622125!2d122.97805699999998!3d-10.773778000000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTDCsDQ2JzI1LjYiUyAxMjLCsDU4JzQxLjAiRQ!5e1!3m2!1sid!2sid!4v1759733852602!5m2!1sid!2sid"
-        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade" allowfullscreen=""></iframe>
-    </div>
-    <div class="rekening">
-      <center><h2>Hadiah Pernikahan</h2></center>
-      <center><p>BCA 4561084291 (A.N. Ike Maya Elimanafe)</p></center>
-      <p>
-        <center>Kami sangat berterimakasih atas hadiah yang bapak/ibu berikan, Semoga Tuhan membalas dengan berkah yang
-          lebih melimpah kepada bapak/Ibu dan saudara/i sekeluarga 🤲🤲🤲</center>
-      </p>
-      <img src="images/Foto6.jpg" alt="QR Code Transfer">
-    </div>
-  </section>
-
-  <!-- RSVP Section -->
-  <section class="rsvp" id="rsvp">
-    <h2>UCAPAN</h2>
-    <form id="rsvpForm">
-      <input type="text" id="namaInput" placeholder="Nama Anda" required>
-      <select id="kehadiranSelect" required>
-        <option value="">Pilih Kehadiran</option>
-        <option value="Hadir">Hadir</option>
-        <option value="Tidak Hadir">Tidak Hadir</option>
-      </select>
-      <textarea id="ucapanTextarea" placeholder="Ucapan untuk pengantin" rows="4"></textarea>
-      <button type="submit">Kirim Ucapan via WhatsApp</button>
-    </form>
-  </section>
-
-  <!-- Footer -->
-  <footer>
-    <p>&copy; Ari & Maya.</p>
-  </footer>
-
-  <!-- Tambahkan elemen untuk hujan salju -->
-  <div class="snow"></div>
-  <script src="script.js"></script>
-  <script>AOS.init();</script>
+  
+  <script>
+    let currentLink = '';
+    
+    function generateLink() {
+      const baseUrl = document.getElementById('baseUrl').value.trim();
+      const guestName = document.getElementById('guestName').value.trim();
+      
+      if (!baseUrl) {
+        alert('Mohon isi link website undangan!');
+        return;
+      }
+      
+      if (!guestName) {
+        alert('Mohon isi nama tamu!');
+        return;
+      }
+      
+      // Hapus trailing slash dari base URL
+      const cleanUrl = baseUrl.replace(/\/$/, '');
+      
+      // Generate link dengan parameter
+      currentLink = `${cleanUrl}/?nama=${encodeURIComponent(guestName)}`;
+      
+      // Tampilkan hasil
+      document.getElementById('generatedLink').textContent = currentLink;
+      document.getElementById('result').classList.add('show');
+      document.getElementById('successMessage').classList.remove('show');
+    }
+    
+    function copyLink() {
+      if (!currentLink) return;
+      
+      navigator.clipboard.writeText(currentLink).then(() => {
+        const successMsg = document.getElementById('successMessage');
+        successMsg.classList.add('show');
+        
+        setTimeout(() => {
+          successMsg.classList.remove('show');
+        }, 3000);
+      }).catch(err => {
+        // Fallback untuk browser lama
+        const textArea = document.createElement('textarea');
+        textArea.value = currentLink;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        const successMsg = document.getElementById('successMessage');
+        successMsg.classList.add('show');
+        
+        setTimeout(() => {
+          successMsg.classList.remove('show');
+        }, 3000);
+      });
+    }
+    
+    function shareWhatsApp() {
+      if (!currentLink) return;
+      
+      const guestName = document.getElementById('guestName').value.trim();
+      const message = `Halo ${guestName}! 💕\n\nKami mengundang Anda untuk hadir di pernikahan kami:\n\n*Ari & Maya*\n📅 Jumat, 17 Oktober 2025\n🕕 18:00 WIB\n\nSilakan buka undangan digital kami:\n${currentLink}\n\nTerima kasih! 🙏`;
+      
+      const waLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
+      window.open(waLink, '_blank');
+    }
+    
+    // Enter key submit
+    document.getElementById('guestName').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        generateLink();
+      }
+    });
+  </script>
 </body>
-
 </html>
-
