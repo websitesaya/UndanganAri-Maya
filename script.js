@@ -65,6 +65,12 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Fungsi untuk mengambil parameter dari URL
+  function getURLParameter(name) {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get(name);
+  }
+
   // Counter foto galeri
   const slider = document.querySelector('.gallery-slider');
   const counter = document.getElementById('current-photo');
@@ -146,3 +152,4 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }
   });
 });
+
