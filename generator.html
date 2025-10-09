@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Generator Link Undangan</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      max-width: 600px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    h1 {
+      color: #667eea;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+    
+    .subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 0.9em;
+    }
+    
+    .form-group {
+      margin-bottom: 20px;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #333;
+      font-weight: 600;
+    }
+    
+    input[type="text"] {
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s;
+    }
+    
+    input[type="text"]:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    button:active {
+      transform: translateY(0);
+    }
+    
+    .result {
+      margin-top: 30px;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
+      display: none;
+    }
+    
+    .result.show {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+    
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    
+    .result h3 {
+      color: #667eea;
+      margin-bottom: 15px;
+    }
+    
+    .link-box {
+      background: white;
+      padding: 15px;
+      border-radius: 8px;
+      border: 2px solid #e0e0e0;
+      word-break: break-all;
+      margin-bottom: 15px;
+      font-family: monospace;
+      font-size: 14px;
+    }
+    
+    .btn-copy {
+      background: #28a745;
+      padding: 10px 20px;
+      width: auto;
+      margin-right: 10px;
+    }
+    
+    .btn-whatsapp {
+      background: #25D366;
+      padding: 10px 20px;
+      width: auto;
+    }
+    
+    .buttons {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      display: none;
+    }
+    
+    .success-message.show {
+      display: block;
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    
+    .example {
+      background: #fff3cd;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 20px;
+      border-left: 4px solid #ffc107;
+    }
+    
+    .example-title {
+      font-weight: bold;
+      color: #856404;
+      margin-bottom: 8px;
+    }
+    
+    .example-list {
+      color: #856404;
+      font-size: 0.9em;
+      line-height: 1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🎊 Generator Link Undangan</h1>
+    <p class="subtitle">Ari & Maya Wedding</p>
+    
+    <div class="form-group">
+      <label for="baseUrl">Link Website Undangan:</label>
+      <input type="text" id="baseUrl" placeholder="https://undangan-arimaya.com" value="https://undangan-arimaya.com">
+    </div>
+    
+    <div class="form-group">
+      <label for="guestName">Nama Tamu:</label>
+      <input type="text" id="guestName" placeholder="Contoh: Bapak John Doe">
+    </div>
+    
+    <button onclick="generateLink()">✨ Generate Link</button>
+    
+    <div class="result" id="result">
+      <h3>Link Undangan:</h3>
+      <div class="link-box" id="generatedLink"></div>
+      <div class="buttons">
+        <button class="btn-copy" onclick="copyLink()">📋 Copy Link</button>
+        <button class="btn-whatsapp" onclick="shareWhatsApp()">💬 Kirim via WhatsApp</button>
+      </div>
+      <div class="success-message" id="successMessage">✓ Link berhasil disalin!</div>
+    </div>
+    
+    <div class="example">
+      <div class="example-title">💡 Tips Penulisan Nama:</div>
+      <div class="example-list">
+        • Bapak John Doe<br>
+        • Ibu Sarah & Keluarga<br>
+        • Saudara Michael<br>
+        • Keluarga Besar Tuan Budi<br>
+        • Bapak/Ibu Ahmad
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    let currentLink = '';
+    
+    function generateLink() {
+      const baseUrl = document.getElementById('baseUrl').value.trim();
+      const guestName = document.getElementById('guestName').value.trim();
+      
+      if (!baseUrl) {
+        alert('Mohon isi link website undangan!');
+        return;
+      }
+      
+      if (!guestName) {
+        alert('Mohon isi nama tamu!');
+        return;
+      }
+      
+      // Hapus trailing slash dari base URL
+      const cleanUrl = baseUrl.replace(/\/$/, '');
+      
+      // Generate link dengan parameter
+      currentLink = `${cleanUrl}/?nama=${encodeURIComponent(guestName)}`;
+      
+      // Tampilkan hasil
+      document.getElementById('generatedLink').textContent = currentLink;
+      document.getElementById('result').classList.add('show');
+      document.getElementById('successMessage').classList.remove('show');
+    }
+    
+    function copyLink() {
+      if (!currentLink) return;
+      
+      navigator.clipboard.writeText(currentLink).then(() => {
+        const successMsg = document.getElementById('successMessage');
+        successMsg.classList.add('show');
+        
+        setTimeout(() => {
+          successMsg.classList.remove('show');
+        }, 3000);
+      }).catch(err => {
+        // Fallback untuk browser lama
+        const textArea = document.createElement('textarea');
+        textArea.value = currentLink;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        const successMsg = document.getElementById('successMessage');
+        successMsg.classList.add('show');
+        
+        setTimeout(() => {
+          successMsg.classList.remove('show');
+        }, 3000);
+      });
+    }
+    
+    function shareWhatsApp() {
+      if (!currentLink) return;
+      
+      const guestName = document.getElementById('guestName').value.trim();
+      const message = `Halo ${guestName}! 💕\n\nKami mengundang Anda untuk hadir di pernikahan kami:\n\n*Ari & Maya*\n📅 Jumat, 17 Oktober 2025\n🕕 18:00 WIB\n\nSilakan buka undangan digital kami:\n${currentLink}\n\nTerima kasih! 🙏`;
+      
+      const waLink = `https://wa.me/?text=${encodeURIComponent(message)}`;
+      window.open(waLink, '_blank');
+    }
+    
+    // Enter key submit
+    document.getElementById('guestName').addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        generateLink();
+      }
+    });
+  </script>
+</body>
+</html>
