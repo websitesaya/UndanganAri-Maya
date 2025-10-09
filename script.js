@@ -64,23 +64,7 @@ window.addEventListener("DOMContentLoaded", () => {
       openBtn: !openBtn
     });
   }
-window.addEventListener("DOMContentLoaded", () => {
-  // ===== CUSTOM NAMA TAMU DARI URL =====
-  const namaTamu = getURLParameter('nama');
-  const coverNameElement = document.getElementById('cover-guest-name');
   
-  if (namaTamu && coverNameElement) {
-    // Decode dan tampilkan nama tamu
-    const namaDecoded = decodeURIComponent(namaTamu);
-    coverNameElement.textContent = namaDecoded;
-  } else if (coverNameElement) {
-    // Jika tidak ada parameter nama, tampilkan default
-    coverNameElement.textContent = 'Bapak/Ibu/Saudara/i';
-  }
-  // ===== END CUSTOM NAMA =====
-  
-  // ... kode lainnya tetap sama ...
-});
   // Fungsi untuk mengambil parameter dari URL
   function getURLParameter(name) {
     const urlParams = new URLSearchParams(window.location.search);
@@ -168,5 +152,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     }
   });
 });
+
 
 
