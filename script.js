@@ -1,3 +1,9 @@
+// Fungsi untuk mengambil parameter dari URL
+function getURLParameter(name) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(name);
+}
+
 // Countdown Timer
 function countdown() {
   const countDate = new Date("Oct 17, 2025 18:00:00").getTime();
@@ -29,22 +35,36 @@ setInterval(countdown, 1000);
 
 // Play Music and Start Snow After DOM Load
 window.addEventListener("DOMContentLoaded", () => {
+  // ===== CUSTOM NAMA TAMU DARI URL =====
+  const namaTamu = getURLParameter('nama');
+  const coverNameElement = document.getElementById('cover-guest-name');
+  
+  if (namaTamu && coverNameElement) {
+    // Decode dan tampilkan nama tamu
+    const namaDecoded = decodeURIComponent(namaTamu);
+    coverNameElement.textContent = namaDecoded;
+  } else if (coverNameElement) {
+    // Jika tidak ada parameter nama, tampilkan default
+    coverNameElement.textContent = 'Bapak/Ibu/Saudara/i';
+  }
+  // ===== END CUSTOM NAMA =====
+
   const audio = document.getElementById("bg-music");
   const cover = document.getElementById("cover");
   const openBtn = document.getElementById("openInvitation");
 
-  console.log("Audio:", audio); // Debug
-  console.log("Cover:", cover); // Debug
-  console.log("Button:", openBtn); // Debug
+  console.log("Audio:", audio);
+  console.log("Cover:", cover);
+  console.log("Button:", openBtn);
 
   // Musik hanya dimulai setelah user klik tombol
   if (openBtn && audio && cover) {
     openBtn.addEventListener("click", () => {
-      console.log("Button clicked!"); // Debug
+      console.log("Button clicked!");
 
       // Mainkan musik
       audio.play().then(() => {
-        console.log("Music playing!"); // Debug
+        console.log("Music playing!");
       }).catch(err => {
         console.log("Audio play prevented:", err);
       });
