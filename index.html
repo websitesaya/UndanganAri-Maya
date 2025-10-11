@@ -5,29 +5,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ari & Maya - Undangan Pernikahan</title>
-  <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Montserrat&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-  <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
-</head>
-
-<body>
-  <!-- Audio dengan ID -->
-  <audio id="bg-music" loop>
-    <source src="audio/music_wedding.mp3" type="audio/mpeg">
-  </audio>
-
-  <!-- Cover Page -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
   <style>
+    /* Reset & Base */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body,
+    html {
+      scroll-behavior: smooth;
+      font-family: 'Montserrat', sans-serif;
+      background: #fff;
+      color: #333;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    /* 3D Canvas Background */
+    #threejs-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* Cover Page dengan 3D Effect */
     #cover {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100vh;
-      background: linear-gradient(rgba(103, 127, 233, 0.2), rgba(118, 75, 162, 0.2)),
+      background: linear-gradient(rgba(103, 127, 233, 0.3), rgba(118, 75, 162, 0.3)),
         url('images/Foto1.jpg') center/cover no-repeat;
       display: flex;
       align-items: center;
@@ -36,18 +61,27 @@
       color: rgb(247, 102, 35);
       text-align: center;
       z-index: 9999;
+      perspective: 1000px;
     }
 
-    /* Kontainer teks agar bisa diposisikan dengan pasti */
     .cover-text {
       position: absolute;
       top: 10%;
-      /* posisi dari atas layar */
       left: 50%;
-      transform: translateX(-50%);
+      transform: translateX(-50%) translateZ(50px);
       width: 100%;
       text-align: center;
       padding: 0 20px;
+      animation: float3d 3s ease-in-out infinite;
+    }
+
+    @keyframes float3d {
+      0%, 100% {
+        transform: translateX(-50%) translateZ(50px) rotateX(0deg);
+      }
+      50% {
+        transform: translateX(-50%) translateZ(80px) rotateX(5deg);
+      }
     }
 
     .cover-text h1 {
@@ -55,18 +89,23 @@
       font-size: 3rem;
       margin-bottom: 15px;
       line-height: 1.4;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(247, 102, 35, 0.5);
+      animation: glow 2s ease-in-out infinite;
     }
 
-    .cover-text h1 span {
-      display: block;
-      font-size: 3rem;
+    @keyframes glow {
+      0%, 100% {
+        text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5), 0 0 20px rgba(247, 102, 35, 0.5);
+      }
+      50% {
+        text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.8), 0 0 40px rgba(247, 102, 35, 0.8);
+      }
     }
 
     .cover-text p {
       font-size: 1.2rem;
       margin-bottom: 30px;
-      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.5);
     }
 
     #openInvitation {
@@ -82,34 +121,518 @@
       transition: all 0.3s ease;
       position: absolute;
       bottom: 10%;
+      transform: translateZ(30px);
+      animation: pulse3d 2s ease-in-out infinite;
     }
 
-    /* Responsif untuk layar kecil */
-    @media (max-width: 600px) {
-      .cover-text {
-        top: 7%;
+    @keyframes pulse3d {
+      0%, 100% {
+        transform: translateZ(30px) scale(1);
+      }
+      50% {
+        transform: translateZ(50px) scale(1.05);
+      }
+    }
+
+    #openInvitation:hover {
+      transform: translateZ(60px) scale(1.1);
+      box-shadow: 0 8px 30px rgba(82, 5, 5, 0.5);
+    }
+
+    /* Hero Section dengan Parallax 3D */
+    .hero {
+      background: url('images/bg.jpg') no-repeat center center/cover;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      text-align: center;
+      color: #fff;
+      perspective: 1500px;
+    }
+
+    .hero .overlay {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.4);
+      z-index: 1;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      color: #fff;
+      padding: 0 20px;
+      transform-style: preserve-3d;
+    }
+
+    .hero-content h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 4em;
+      transform: translateZ(100px);
+      animation: hero3d 4s ease-in-out infinite;
+      text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+    }
+
+    @keyframes hero3d {
+      0%, 100% {
+        transform: translateZ(100px) rotateY(0deg);
+      }
+      50% {
+        transform: translateZ(150px) rotateY(5deg);
+      }
+    }
+
+    .sub {
+      transform: translateZ(70px);
+      font-size: 1.3em;
+      margin: 20px 0;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateZ(70px) translateY(0);
+      }
+      50% {
+        transform: translateZ(70px) translateY(-10px);
+      }
+    }
+
+    .btn-cta {
+      display: inline-block;
+      background: #ff90b3;
+      color: #fff;
+      padding: 12px 30px;
+      margin-top: 25px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s ease;
+      transform: translateZ(50px);
+      box-shadow: 0 10px 30px rgba(255, 144, 179, 0.4);
+    }
+
+    .btn-cta:hover {
+      background: #ec5f88;
+      transform: translateZ(80px) scale(1.1);
+      box-shadow: 0 15px 40px rgba(236, 95, 136, 0.6);
+    }
+
+    .title {
+      transform: translateZ(40px);
+      margin-top: 30px;
+      font-weight: bold;
+    }
+
+    .description {
+      transform: translateZ(30px);
+      font-style: italic;
+      max-width: 600px;
+      margin: 15px auto;
+    }
+
+    /* Countdown dengan 3D Cards */
+    .countdown {
+      padding: 60px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #ecc899, #faaced);
+      perspective: 1500px;
+    }
+
+    .countdown h2 {
+      font-size: 2.5em;
+      margin-bottom: 40px;
+      animation: fadeInDown 1s ease;
+    }
+
+    .timer {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      transform-style: preserve-3d;
+    }
+
+    .timer div {
+      background: linear-gradient(145deg, #ffffff, #f0f0f0);
+      padding: 30px 25px;
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      min-width: 120px;
+      transform: translateZ(0);
+      transition: all 0.3s ease;
+      animation: cardFloat 3s ease-in-out infinite;
+    }
+
+    .timer div:nth-child(1) { animation-delay: 0s; }
+    .timer div:nth-child(2) { animation-delay: 0.2s; }
+    .timer div:nth-child(3) { animation-delay: 0.4s; }
+    .timer div:nth-child(4) { animation-delay: 0.6s; }
+
+    @keyframes cardFloat {
+      0%, 100% {
+        transform: translateZ(0) rotateX(0deg) rotateY(0deg);
+      }
+      50% {
+        transform: translateZ(50px) rotateX(5deg) rotateY(5deg);
+      }
+    }
+
+    .timer div:hover {
+      transform: translateZ(80px) rotateX(10deg) scale(1.1);
+      box-shadow: 0 25px 50px rgba(240, 109, 146, 0.4);
+    }
+
+    .timer span {
+      font-size: 3em;
+      font-weight: bold;
+      display: block;
+      color: #f06292;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .timer p {
+      margin-top: 10px;
+      font-size: 1.1em;
+      color: #666;
+    }
+
+    /* Galeri 3D */
+    .gallery {
+      padding: 60px 0;
+      background: linear-gradient(45deg, #f7dda6, #f76ad3);
+      text-align: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .gallery h2 {
+      padding: 0 20px;
+      margin-bottom: 20px;
+      font-size: 2.5em;
+      animation: slideInLeft 1s ease;
+    }
+
+    .photo-caption-title,
+    .photo-caption-description {
+      padding: 0 20px;
+      color: #fff;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .gallery-instruction {
+      padding: 10px 20px;
+      margin-bottom: 30px;
+      color: #fff;
+      font-size: 1.1em;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    .gallery-slider {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      gap: 0;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: thin;
+      padding: 20px 0;
+      perspective: 1000px;
+    }
+
+    .gallery-slider::-webkit-scrollbar {
+      height: 10px;
+    }
+
+    .gallery-slider::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.4);
+      border-radius: 10px;
+    }
+
+    .gallery-slider::-webkit-scrollbar-thumb {
+      background: #f06292;
+      border-radius: 10px;
+    }
+
+    .gallery-slider img {
+      width: 90vw;
+      max-width: 800px;
+      height: 70vh;
+      object-fit: cover;
+      scroll-snap-align: center;
+      flex-shrink: 0;
+      border-radius: 20px;
+      margin: 0 5vw;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      transition: all 0.5s ease;
+      transform: perspective(1000px) rotateY(0deg);
+    }
+
+    .gallery-slider img:hover {
+      transform: perspective(1000px) rotateY(10deg) scale(1.05);
+      box-shadow: 0 30px 80px rgba(240, 109, 146, 0.5);
+    }
+
+    .gallery-counter {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0, 0, 0, 0.7);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 25px;
+      font-size: 1em;
+      font-weight: bold;
+      z-index: 10;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Lokasi & Rekening dengan 3D Cards */
+    .info {
+      display: flex;
+      flex-wrap: wrap;
+      padding: 60px 20px;
+      background: linear-gradient(45deg, #f0c5de, hsl(298, 88%, 74%));
+      gap: 40px;
+      justify-content: center;
+      perspective: 1500px;
+    }
+
+    .info .location,
+    .info .rekening {
+      flex: 1;
+      min-width: 300px;
+      max-width: 500px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    .info .location:hover,
+    .info .rekening:hover {
+      transform: translateZ(50px) rotateX(5deg);
+      box-shadow: 0 25px 60px rgba(240, 109, 146, 0.4);
+    }
+
+    .info h2 {
+      color: #f06292;
+      margin-bottom: 20px;
+      transform: translateZ(20px);
+    }
+
+    .info iframe {
+      width: 100%;
+      height: 300px;
+      border: 0;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .rekening img {
+      width: 250px;
+      margin: 20px auto;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .rekening img:hover {
+      transform: scale(1.1) rotateZ(5deg);
+    }
+
+    /* RSVP dengan 3D Form */
+    .rsvp {
+      padding: 60px 20px;
+      background: linear-gradient(45deg, #f7b189, hsl(298, 88%, 74%));
+      text-align: center;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      perspective: 1500px;
+    }
+
+    .rsvp h2 {
+      font-size: 2.5em;
+      color: #fff;
+      margin-bottom: 30px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      animation: bounceIn 1s ease;
+    }
+
+    @keyframes bounceIn {
+      0% {
+        opacity: 0;
+        transform: scale(0.3);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1.05);
+      }
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    .rsvp form {
+      max-width: 500px;
+      width: 100%;
+      margin: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      padding: 40px;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(10px);
+      transform-style: preserve-3d;
+      animation: formSlideIn 1s ease;
+    }
+
+    @keyframes formSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(50px) rotateX(-20deg);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0deg);
+      }
+    }
+
+    .rsvp input,
+    .rsvp textarea,
+    .rsvp select {
+      padding: 15px;
+      border-radius: 12px;
+      border: 2px solid #e0e0e0;
+      font-size: 1.1em;
+      font-family: inherit;
+      transition: all 0.3s ease;
+      background: #fff;
+      transform: translateZ(0);
+    }
+
+    .rsvp input:focus,
+    .rsvp textarea:focus,
+    .rsvp select:focus {
+      outline: none;
+      border-color: #ff8fa3;
+      box-shadow: 0 0 0 3px rgba(255, 143, 163, 0.2);
+      transform: translateZ(20px);
+    }
+
+    .rsvp button {
+      background: linear-gradient(45deg, #ff8fa3, #ec5f88);
+      color: white;
+      padding: 15px 30px;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.2em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transform: translateZ(0);
+    }
+
+    .rsvp button:hover {
+      background: linear-gradient(45deg, #ec5f88, #d63384);
+      transform: translateZ(30px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(236, 95, 136, 0.5);
+    }
+
+    /* Footer */
+    footer {
+      padding: 20px;
+      background: #1c1c1c;
+      color: #fff;
+      text-align: center;
+      font-size: 0.9em;
+    }
+
+    /* Particles Container */
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-content h1 {
+        font-size: 2.5em;
       }
 
+      .countdown h2 {
+        font-size: 2em;
+      }
+
+      .timer div {
+        min-width: 80px;
+        padding: 20px 15px;
+      }
+
+      .timer span {
+        font-size: 2em;
+      }
+
+      .gallery-slider img {
+        width: 95vw;
+        height: 60vh;
+      }
+    }
+
+    @media (max-width: 480px) {
       .cover-text h1 {
-        font-size: 2.4rem;
+        font-size: 2rem;
       }
 
-      .cover-text h1 span {
-        font-size: 2.4rem;
+      .hero-content h1 {
+        font-size: 2em;
       }
 
-      .cover-text p {
-        font-size: 1rem;
+      .rsvp form {
+        padding: 30px 20px;
       }
     }
   </style>
+</head>
 
+<body>
+  <!-- 3D Background Canvas -->
+  <canvas id="threejs-bg"></canvas>
+
+  <!-- Audio -->
+  <audio id="bg-music" loop>
+    <source src="audio/music_wedding.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- Cover Page -->
   <div id="cover">
     <div class="cover-text">
       <h1>Undangan Pernikahan<br><span>Ari & Maya</span></h1>
       <p>Kepada Yth.<br><span id="cover-guest-name">Bapak/Ibu/Saudara/i</span></p>
     </div>
-
     <button id="openInvitation">🎵 Buka Undangan</button>
   </div>
 
@@ -117,11 +640,9 @@
   <section class="hero" id="hero">
     <div class="overlay"></div>
     <div class="hero-content">
-      <center>
-        <h1 class="typing">Ari & Maya</h1>
-      </center>
+      <h1>Ari & Maya</h1>
       <p class="sub">Dengan suka cita mengundang Anda ke pernikahan kami ❤️🥰</p>
-      <a href="#Ucapan Anda" class="btn-cta">Konfirmasi Kehadiran</a>
+      <a href="#rsvp" class="btn-cta">Konfirmasi Kehadiran</a>
       <p class="title">Markus 10:8-9</p>
       <p class="description">Dan mereka keduanya akan menjadi satu daging, jadi mereka tidak lagi menjadi dua orang,
         melainkan satu. Oleh karena itu apa yang telah dipersatukan Tuhan, janganlah manusia memisahkan.</p>
@@ -132,17 +653,17 @@
   <section class="countdown" id="countdown">
     <h2>Menuju Hari Bahagia</h2>
     <div class="timer">
-      <div><span id="days"></span>
-        <p>Jumat</p>
+      <div><span id="days">0</span>
+        <p>Hari</p>
       </div>
-      <div><span id="hours"></span>
-        <p>17 Okt</p>
+      <div><span id="hours">0</span>
+        <p>Jam</p>
       </div>
-      <div><span id="minutes"></span>
-        <p>18.00</p>
+      <div><span id="minutes">0</span>
+        <p>Menit</p>
       </div>
-      <div><span id="seconds"></span>
-        <p>2025</p>
+      <div><span id="seconds">0</span>
+        <p>Detik</p>
       </div>
     </div>
   </section>
@@ -150,9 +671,8 @@
   <!-- Galeri -->
   <section class="gallery" id="gallery">
     <h2>Galeri Prewedding</h2>
-    <!-- Instruksi Geser - TAMBAHKAN INI -->
     <div class="gallery-instruction">
-      Geser untuk melihat foto lainnya
+      👈 Geser untuk melihat foto lainnya 👉
     </div>
     <p class="photo-caption-title">Kejadian 2:18</p>
     <p class="photo-caption-description">Dan Tuhan Yahweh berfirman, "Tidak baik, kalau manusia itu seorang diri saja;
@@ -163,42 +683,39 @@
       <img src="images/Foto3.jpg" alt="Foto 3">
       <img src="images/Foto4.jpg" alt="Foto 4">
       <img src="images/Foto5.jpg" alt="Foto 5">
-      <img src="images/Foto7.jpg" alt="Foto 5">
-      <img src="images/Foto8.jpg" alt="Foto 3">
-      <img src="images/Foto9.jpg" alt="Foto 4">
-      <img src="images/Foto10.jpg" alt="Foto 5">
-      <img src="images/Foto11.jpg" alt="Foto 4">
-      <img src="images/Foto12.jpg" alt="Foto 5">
+      <img src="images/Foto7.jpg" alt="Foto 6">
+      <img src="images/Foto8.jpg" alt="Foto 7">
+      <img src="images/Foto9.jpg" alt="Foto 8">
+      <img src="images/Foto10.jpg" alt="Foto 9">
+      <img src="images/Foto11.jpg" alt="Foto 10">
+      <img src="images/Foto12.jpg" alt="Foto 11">
     </div>
-    <!-- Counter Foto - TAMBAHKAN INI -->
     <div class="gallery-counter">
-      <span id="current-photo">1</span> / <span id="total-photos">3</span>
+      <span id="current-photo">1</span> / <span id="total-photos">11</span>
     </div>
   </section>
 
   <!-- Lokasi & Rekening -->
   <section class="info" id="info">
     <div class="location">
-      <h2>Lokasi Acara: Rumah Bapak Anderias Elimanafe</h2>
+      <h2>Lokasi Acara</h2>
+      <p><strong>Rumah Bapak Anderias Elimanafe</strong></p>
       <iframe
         src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d4195.0785124622125!2d122.97805699999998!3d-10.773778000000002!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMTDCsDQ2JzI1LjYiUyAxMjLCsDU4JzQxLjAiRQ!5e1!3m2!1sid!2sid!4v1759733852602!5m2!1sid!2sid"
-        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade" allowfullscreen=""></iframe>
+        allowfullscreen="" loading="lazy"></iframe>
     </div>
     <div class="rekening">
-      <center><h2>Hadiah Pernikahan</h2></center>
-      <center><p>BCA 4561084291 (A.N. Ike Maya Elimanafe)</p></center>
-      <p>
-        <center>Kami sangat berterimakasih atas hadiah yang bapak/ibu berikan, Semoga Tuhan membalas dengan berkah yang
-          lebih melimpah kepada bapak/Ibu dan saudara/i sekeluarga 🤲🤲🤲</center>
-      </p>
+      <h2>Hadiah Pernikahan</h2>
+      <p><strong>BCA 4561084291</strong><br>(A.N. Ike Maya Elimanafe)</p>
+      <p>Kami sangat berterimakasih atas hadiah yang bapak/ibu berikan. Semoga Tuhan membalas dengan berkah yang
+        lebih melimpah kepada bapak/Ibu dan saudara/i sekeluarga 🤲</p>
       <img src="images/Foto6.jpg" alt="QR Code Transfer">
     </div>
   </section>
 
   <!-- RSVP Section -->
   <section class="rsvp" id="rsvp">
-    <h2>UCAPAN</h2>
+    <h2>UCAPAN & KONFIRMASI</h2>
     <form id="rsvpForm">
       <input type="text" id="namaInput" placeholder="Nama Anda" required>
       <select id="kehadiranSelect" required>
@@ -213,15 +730,455 @@
 
   <!-- Footer -->
   <footer>
-    <p>&copy; Ari & Maya.</p>
+    <p>&copy; 2025 Ari & Maya. Made with ❤️</p>
   </footer>
 
-  <!-- Tambahkan elemen untuk hujan salju -->
-  <div class="snow"></div>
-  <script src="script.js"></script>
-  <script>AOS.init();</script>
+  <script>
+    // Three.js 3D Background
+    function init3DBackground() {
+      const canvas = document.getElementById('threejs-bg');
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+      const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+      
+      renderer.setSize(window.innerWidth, window.innerHeight);
+      renderer.setPixelRatio(window.devicePixelRatio);
+      camera.position.z = 30;
+
+      // Create particles
+      const particlesGeometry = new THREE.BufferGeometry();
+      const particlesCount = 3000;
+      const posArray = new Float32Array(particlesCount * 3);
+
+      for (let i = 0; i < particlesCount * 3; i++) {
+        posArray[i] = (Math.random() - 0.5) * 100;
+      }
+
+      particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+      
+      const particlesMaterial = new THREE.PointsMaterial({
+        size: 0.1,
+        color: 0xff90b3,
+        transparent: true,
+        opacity: 0.6
+      });
+
+      const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+      scene.add(particlesMesh);
+
+      // Create heart shapes
+      const heartShape = new THREE.Shape();
+      heartShape.moveTo(0, 0);
+      heartShape.bezierCurveTo(0, -0.3, -0.6, -0.3, -0.6, 0);
+      heartShape.bezierCurveTo(-0.6, 0.3, 0, 0.6, 0, 1);
+      heartShape.bezierCurveTo(0, 0.6, 0.6, 0.3, 0.6, 0);
+      heartShape.bezierCurveTo(0.6, -0.3, 0, -0.3, 0, 0);
+
+      const extrudeSettings = { depth: 0.3, bevelEnabled: true, bevelSegments: 2, steps: 2, bevelSize: 0.1, bevelThickness: 0.1 };
+      const heartGeometry = new THREE.ExtrudeGeometry(heartShape, extrudeSettings);
+      const heartMaterial = new THREE.MeshPhongMaterial({ color: 0xec5f88, transparent: true, opacity: 0.3 });
+
+      for (let i = 0; i < 15; i++) {
+        const heart = new THREE.Mesh(heartGeometry, heartMaterial);
+        heart.position.set(
+          (Math.random() - 0.5) * 50,
+          (Math.random() - 0.5) * 50,
+          (Math.random() - 0.5) * 50
+        );
+        heart.rotation.set(
+          Math.random() * Math.PI,
+          Math.random() * Math.PI,
+          Math.random() * Math.PI
+        );
+        heart.scale.set(0.5, 0.5, 0.5);
+        scene.add(heart);
+      }
+
+      // Lighting
+      const pointLight = new THREE.PointLight(0xffffff, 1);
+      pointLight.position.set(5, 5, 5);
+      scene.add(pointLight);
+
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+      scene.add(ambientLight);
+
+      // Mouse movement effect
+      let mouseX = 0;
+      let mouseY = 0;
+
+      document.addEventListener('mousemove', (e) => {
+        mouseX = (e.clientX / window.innerWidth) * 2 - 1;
+        mouseY = -(e.clientY / window.innerHeight) * 2 + 1;
+      });
+
+      // Animation loop
+      function animate() {
+        requestAnimationFrame(animate);
+
+        particlesMesh.rotation.y += 0.001;
+        particlesMesh.rotation.x += 0.0005;
+
+        scene.children.forEach((child) => {
+          if (child instanceof THREE.Mesh) {
+            child.rotation.x += 0.005;
+            child.rotation.y += 0.005;
+          }
+        });
+
+        camera.position.x += (mouseX * 5 - camera.position.x) * 0.05;
+        camera.position.y += (mouseY * 5 - camera.position.y) * 0.05;
+        camera.lookAt(scene.position);
+
+        renderer.render(scene, camera);
+      }
+
+      animate();
+
+      // Handle resize
+      window.addEventListener('resize', () => {
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+      });
+    }
+
+    // URL Parameter
+    function getURLParameter(name) {
+      const urlParams = new URLSearchParams(window.location.search);
+      return urlParams.get(name);
+    }
+
+    // Countdown Timer
+    function countdown() {
+      const countDate = new Date("Oct 17, 2025 18:00:00").getTime();
+      const now = new Date().getTime();
+      const gap = countDate - now;
+
+      const second = 1000;
+      const minute = second * 60;
+      const hour = minute * 60;
+      const day = hour * 24;
+
+      const textDay = Math.floor(gap / day);
+      const textHour = Math.floor((gap % day) / hour);
+      const textMinute = Math.floor((gap % hour) / minute);
+      const textSecond = Math.floor((gap % minute) / second);
+
+      document.getElementById('days').innerText = textDay;
+      document.getElementById('hours').innerText = textHour;
+      document.getElementById('minutes').innerText = textMinute;
+      document.getElementById('seconds').innerText = textSecond;
+    }
+
+    setInterval(countdown, 1000);
+
+    // GSAP Scroll Animations
+    function initScrollAnimations() {
+      gsap.registerPlugin(ScrollTrigger);
+
+      // Hero animations
+      gsap.from('.hero-content h1', {
+        scrollTrigger: {
+          trigger: '.hero',
+          start: 'top center',
+          end: 'bottom center',
+          scrub: 1
+        },
+        y: 100,
+        opacity: 0,
+        rotationX: -45,
+        transformOrigin: 'center center',
+        duration: 1
+      });
+
+      gsap.from('.hero-content .sub', {
+        scrollTrigger: {
+          trigger: '.hero',
+          start: 'top center',
+          scrub: 1
+        },
+        y: 80,
+        opacity: 0,
+        delay: 0.2
+      });
+
+      // Countdown cards animation
+      gsap.utils.toArray('.timer div').forEach((card, i) => {
+        gsap.from(card, {
+          scrollTrigger: {
+            trigger: '.countdown',
+            start: 'top 80%',
+            toggleActions: 'play none none reverse'
+          },
+          y: 100,
+          opacity: 0,
+          rotationX: -45,
+          duration: 0.8,
+          delay: i * 0.1
+        });
+      });
+
+      // Gallery images 3D effect
+      gsap.utils.toArray('.gallery-slider img').forEach((img, i) => {
+        gsap.from(img, {
+          scrollTrigger: {
+            trigger: img,
+            start: 'top 90%',
+            end: 'bottom 60%',
+            scrub: 1
+          },
+          rotationY: 45,
+          opacity: 0,
+          scale: 0.8
+        });
+      });
+
+      // Info cards animation
+      gsap.from('.location', {
+        scrollTrigger: {
+          trigger: '.info',
+          start: 'top 80%',
+          toggleActions: 'play none none reverse'
+        },
+        x: -100,
+        opacity: 0,
+        rotationY: -45,
+        duration: 1
+      });
+
+      gsap.from('.rekening', {
+        scrollTrigger: {
+          trigger: '.info',
+          start: 'top 80%',
+          toggleActions: 'play none none reverse'
+        },
+        x: 100,
+        opacity: 0,
+        rotationY: 45,
+        duration: 1
+      });
+
+      // RSVP form animation
+      gsap.from('.rsvp form', {
+        scrollTrigger: {
+          trigger: '.rsvp',
+          start: 'top 70%',
+          toggleActions: 'play none none reverse'
+        },
+        y: 100,
+        opacity: 0,
+        rotationX: -30,
+        duration: 1
+      });
+
+      // Parallax effect on scroll
+      gsap.to('.hero', {
+        scrollTrigger: {
+          trigger: '.hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true
+        },
+        y: 300,
+        opacity: 0.5
+      });
+    }
+
+    // Gallery counter
+    function initGalleryCounter() {
+      const slider = document.querySelector('.gallery-slider');
+      const counter = document.getElementById('current-photo');
+      const total = document.getElementById('total-photos');
+
+      if (slider && counter && total) {
+        const images = slider.querySelectorAll('img');
+        total.textContent = images.length;
+
+        slider.addEventListener('scroll', () => {
+          const scrollLeft = slider.scrollLeft;
+          const imageWidth = images[0].offsetWidth + (window.innerWidth * 0.1);
+          const current = Math.round(scrollLeft / imageWidth) + 1;
+          counter.textContent = Math.min(current, images.length);
+        });
+      }
+    }
+
+    // RSVP Form Handler
+    function initRSVPForm() {
+      const rsvpForm = document.getElementById('rsvpForm');
+      if (rsvpForm) {
+        rsvpForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          const nama = document.getElementById('namaInput').value.trim();
+          const kehadiran = document.getElementById('kehadiranSelect').value;
+          const ucapan = document.getElementById('ucapanTextarea').value.trim();
+
+          if (!nama || !kehadiran) {
+            alert('Mohon lengkapi nama dan pilihan kehadiran!');
+            return;
+          }
+
+          const nomorWhatsApp = '6282318640249';
+          let pesan = `*RSVP Undangan Pernikahan*\n*Ari & Maya*\n\n`;
+          pesan += `📝 Nama: ${nama}\n`;
+          pesan += `✅ Kehadiran: ${kehadiran}\n`;
+
+          if (ucapan) {
+            pesan += `\n💌 Ucapan:\n${ucapan}`;
+          }
+
+          const pesanEncoded = encodeURIComponent(pesan);
+          const waLink = `https://wa.me/${nomorWhatsApp}?text=${pesanEncoded}`;
+          window.open(waLink, '_blank');
+
+          // Success animation
+          gsap.to('.rsvp button', {
+            scale: 1.1,
+            duration: 0.2,
+            yoyo: true,
+            repeat: 1
+          });
+        });
+      }
+    }
+
+    // Parallax mouse effect
+    function initParallaxEffect() {
+      document.addEventListener('mousemove', (e) => {
+        const mouseX = e.clientX / window.innerWidth;
+        const mouseY = e.clientY / window.innerHeight;
+
+        gsap.to('.hero-content h1', {
+          x: (mouseX - 0.5) * 50,
+          y: (mouseY - 0.5) * 50,
+          duration: 0.5
+        });
+
+        gsap.to('.hero-content .sub', {
+          x: (mouseX - 0.5) * 30,
+          y: (mouseY - 0.5) * 30,
+          duration: 0.7
+        });
+
+        gsap.to('.hero-content .btn-cta', {
+          x: (mouseX - 0.5) * 20,
+          y: (mouseY - 0.5) * 20,
+          duration: 0.9
+        });
+      });
+    }
+
+    // Cover animation and music
+    function initCover() {
+      const guestNameParam = getURLParameter('nama');
+      const coverGuestNameEl = document.getElementById('cover-guest-name');
+      
+      if (guestNameParam && coverGuestNameEl) {
+        coverGuestNameEl.textContent = guestNameParam;
+      }
+
+      const audio = document.getElementById('bg-music');
+      const cover = document.getElementById('cover');
+      const openBtn = document.getElementById('openInvitation');
+
+      if (openBtn && audio && cover) {
+        openBtn.addEventListener('click', () => {
+          // Play music
+          audio.play().catch(err => console.log('Audio play prevented:', err));
+
+          // Animate cover out with 3D effect
+          gsap.to(cover, {
+            scale: 1.5,
+            opacity: 0,
+            rotationY: 90,
+            duration: 1,
+            ease: 'power2.inOut',
+            onComplete: () => {
+              cover.style.display = 'none';
+              
+              // Initialize all animations after cover is removed
+              init3DBackground();
+              initScrollAnimations();
+              initParallaxEffect();
+            }
+          });
+
+          // Animate button
+          gsap.to(openBtn, {
+            scale: 0,
+            opacity: 0,
+            duration: 0.5,
+            ease: 'back.in'
+          });
+        });
+      }
+    }
+
+    // Initialize on DOM load
+    window.addEventListener('DOMContentLoaded', () => {
+      countdown();
+      initCover();
+      initGalleryCounter();
+      initRSVPForm();
+
+      // Add floating animation to form inputs
+      const formInputs = document.querySelectorAll('.rsvp input, .rsvp textarea, .rsvp select');
+      formInputs.forEach((input, i) => {
+        input.addEventListener('focus', function() {
+          gsap.to(this, {
+            scale: 1.02,
+            boxShadow: '0 10px 30px rgba(255, 143, 163, 0.3)',
+            duration: 0.3
+          });
+        });
+
+        input.addEventListener('blur', function() {
+          gsap.to(this, {
+            scale: 1,
+            boxShadow: '0 0 0 rgba(255, 143, 163, 0)',
+            duration: 0.3
+          });
+        });
+      });
+
+      // Add hover effects to countdown cards
+      const timerCards = document.querySelectorAll('.timer div');
+      timerCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+          gsap.to(this, {
+            rotationY: 10,
+            rotationX: 5,
+            scale: 1.1,
+            duration: 0.3
+          });
+        });
+
+        card.addEventListener('mouseleave', function() {
+          gsap.to(this, {
+            rotationY: 0,
+            rotationX: 0,
+            scale: 1,
+            duration: 0.3
+          });
+        });
+      });
+
+      // Smooth scroll for links
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          if (target) {
+            gsap.to(window, {
+              scrollTo: target,
+              duration: 1.5,
+              ease: 'power2.inOut'
+            });
+          }
+        });
+      });
+    });
+  </script>
 </body>
-
 </html>
-
-
